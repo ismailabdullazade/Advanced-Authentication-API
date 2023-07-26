@@ -11,7 +11,7 @@ const errorHandlerMiddleware = (err,req,res,next) => {
 
     return res.status(500).json({
         success:false,
-        message:"Bir hata olushtu pls APinzi kontrol edin"
+        message:"There is an error occured, please check you API !"
     })
 };
 

@@ -2,14 +2,31 @@ require("express-async-errors")
 const user = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const APIError = require("../utils/errors");
+const Response = require("../utils/response");
+const { createToken } = require("../middlewares/auth");
+
 
 const login = async(req,res)=>{
-    console.log(req.body);
+    const {email,password}=req.body;
 
-    return res.json(req.body)
-}
+    const userInfo=user.findOne({email})
+
+    if(!userInfo){
+        throw new APIError("Email or Password is incorrect",401)
+    }
+    const comparedPassword=await bcrypt.compare(password,userInfo.password)
+
+    if(!comparedPassword){
+        throw new APIError("Email or Password is incorrect",401)
+    }
+
+    createToken(userInfo,res)
+};
+
 const register = async(req,res)=>{
+
     const {email} =req.body;
+
     const userCheck = await user.findOne({email});
 
     if(userCheck){
@@ -22,17 +39,13 @@ const register = async(req,res)=>{
 
         await userSave.save()
             .then((response)=>{
-                return res.status(201).json({
-                    success:true,
-                    data:response,
-                    message:"Kayit bashari ile eklendi"
-                })
+                return new Response(response,"Kayit bashari ile eklendi").created(res)
             })
             .catch((error)=>{
-                console.log(error);
+                throw new APIError("User couldn't register !",400)
             })
     } catch (error) {
-        
+        console.log(error);
     }
 
 
