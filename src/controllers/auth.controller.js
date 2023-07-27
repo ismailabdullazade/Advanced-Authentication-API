@@ -39,7 +39,7 @@ const register = async(req,res)=>{
 
         await userSave.save()
             .then((response)=>{
-                return new Response(response,"Kayit bashari ile eklendi").created(res)
+                return new Response(response,"User registered successfuly").created(res)
             })
             .catch((error)=>{
                 throw new APIError("User couldn't register !",400)
@@ -52,7 +52,14 @@ const register = async(req,res)=>{
     return res.json(req.body)
 }
 
+const me = async(req,res) => {
+    console.log("Inside of Me function");
+    console.log(req.user);
+    throw new Response(req.user).success(res);
+}
+
 module.exports = {
     login,
     register,
+    me
 }
