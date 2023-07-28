@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const APIError = require("../utils/errors");
 const Response = require("../utils/response");
 const { createToken } = require("../middlewares/auth");
+const crypto = require("crypto");
 
 
 const login = async(req,res)=>{
@@ -56,6 +57,16 @@ const me = async(req,res) => {
     console.log("Inside of Me function");
     console.log(req.user);
     throw new Response(req.user).success(res);
+}
+
+const forgetPassword = async (req,res) => {
+    const {email} = req.body;
+
+    const userInfo = await user.findOne({email}).select("name lastname email")
+
+    if(!userInfo) throw new APIError("Gecersiz user ", 400)
+
+    console.log("userInfo: " +  userInfo);
 }
 
 module.exports = {
