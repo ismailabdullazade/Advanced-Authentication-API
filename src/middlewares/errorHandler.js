@@ -9,6 +9,9 @@ const errorHandlerMiddleware = (err,req,res,next) => {
             })
     }
 
+    console.log(err.name);
+    if(err.name === "CastError") console.log("testing error");
+
     return res.status(500).json({
         success:false,
         message:"There is an error occured, please check you API !"
