@@ -21,3 +21,4 @@ router.post("/upload",function(req,res){
 })
 
 module.exports = router;
+console.log('Index.jssssssssssssss')
