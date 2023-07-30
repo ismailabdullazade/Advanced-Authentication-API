@@ -5,20 +5,27 @@ const APIError = require("../utils/errors");
 const Response = require("../utils/response");
 const { createToken } = require("../middlewares/auth");
 const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
+const moment = require("moment");
 
 
 const login = async(req,res)=>{
     const {email,password}=req.body;
+    
 
-    const userInfo=user.findOne({email})
-
+    const userInfo=await user.findOne({email})
+    
     if(!userInfo){
-        throw new APIError("Email or Password is incorrect",401)
+        throw new APIError("Email or Password is incorrect",401);
+        
     }
-    const comparedPassword=await bcrypt.compare(password,userInfo.password)
+    const comparedPassword=await bcrypt.compare(password,userInfo.password);
+    console.log(comparedPassword);
 
     if(!comparedPassword){
+        console.log("shifren sehvdu");
         throw new APIError("Email or Password is incorrect",401)
+        
     }
 
     createToken(userInfo,res)
@@ -38,13 +45,14 @@ const register = async(req,res)=>{
     try {
         const userSave = new user(req.body);
 
-        await userSave.save()
-            .then((response)=>{
-                return new Response(response,"User registered successfuly").created(res)
-            })
-            .catch((error)=>{
-                throw new APIError("User couldn't register !",400)
-            })
+        await userSave
+        .save()
+        .then((data) => {
+          return new Response(data, "Kayıt Başarıyla Eklendi").created(res);
+        })
+        .catch((err) => {
+          throw new APIError("Kullanıcı Kayıt Edilemedi !", 400);
+        });
     } catch (error) {
         console.log(error);
     }
@@ -67,10 +75,33 @@ const forgetPassword = async (req,res) => {
     if(!userInfo) throw new APIError("Gecersiz user ", 400)
 
     console.log("userInfo: " +  userInfo);
+
+    const resetCode = crypto.randomBytes(3).toString("hex");
+    console.log(resetCode);
+
+    await sendEmail ({
+        from:"base.api.proje@outlook.com",
+        to:userInfo.email,
+        subject:"Sifre sifirlandi",
+        text:`Your code to reset password is ${resetCode}`
+    })
+
+    await user.updateOne(
+        {email},
+        {
+            reset:{
+                code:resetCode,
+                time:moment(new Date()).add(15,'minute').format("YYYY-MM-DD HH:mm:ss")
+            }
+        }
+    )
+
+    return new Response(true,'Please check your email inbox').success(res)
 }
 
 module.exports = {
     login,
     register,
-    me
+    me,
+    forgetPassword
 }

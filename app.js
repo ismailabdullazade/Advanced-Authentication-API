@@ -9,7 +9,7 @@ const cors = require("cors")
 const corsOptions = require("./src/helpers/corsOptions")
 const mongoSanitize = require("express-mongo-sanitize")
 const path = require("path")
-const apiLimiter = require("./src/middlewares/validations/rateLimit")
+// const apiLimiter = require("./src/middlewares/validations/rateLimit")
 
 //Middlewares
 
@@ -22,7 +22,7 @@ app.use("/uploads",express.static(__dirname))
 
 app.use(cors(corsOptions))
 
-app.use("/api",apiLimiter)
+// app.use("/api",apiLimiter)
 
 app.use(
     mongoSanitize({
