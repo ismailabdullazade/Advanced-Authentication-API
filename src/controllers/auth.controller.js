@@ -66,38 +66,42 @@ const me = async(req,res) => {
     console.log(req.user);
     throw new Response(req.user).success(res);
 }
-
-const forgetPassword = async (req,res) => {
-    const {email} = req.body;
-
-    const userInfo = await user.findOne({email}).select("name lastname email")
-
-    if(!userInfo) throw new APIError("Gecersiz user ", 400)
-
-    console.log("userInfo: " +  userInfo);
-
+const forgetPassword = async (req, res) => {
+    const { email } = req.body;
+  
+    const userInfo = await user
+      .findOne({ email })
+      .select(" name lastname email ");
+  
+    if (!userInfo) return new APIError("Geçersiz Kullanıcı", 400);
+  
+    console.log("userInfo : ", userInfo);
+  
     const resetCode = crypto.randomBytes(3).toString("hex");
+  
     console.log(resetCode);
-
-    await sendEmail ({
-        from:"base.api.proje@outlook.com",
-        to:userInfo.email,
-        subject:"Sifre sifirlandi",
-        text:`Your code to reset password is ${resetCode}`
+  
+    await sendEmail({
+        from: "base.api.proje@outlook.com",
+        to: userInfo.email,
+        subject: "Şifre Sıfırlama",
+        text: `Şifre Sıfırlama Kodunuz ${resetCode}`
     })
-
+  
     await user.updateOne(
-        {email},
-        {
-            reset:{
-                code:resetCode,
-                time:moment(new Date()).add(15,'minute').format("YYYY-MM-DD HH:mm:ss")
-            }
-        }
-    )
-
-    return new Response(true,'Please check your email inbox').success(res)
-}
+      { email },
+      {
+        reset: {
+          code: resetCode,
+          time: moment(new Date())
+            .add(15, "minute")
+            .format("YYYY-MM-DD HH:mm:ss"),
+        },
+      }
+    );
+  
+    return new Response(true, "Lütfen Mail Kutunuzu Kontrol Ediniz").success(res);
+  };
 
 module.exports = {
     login,
