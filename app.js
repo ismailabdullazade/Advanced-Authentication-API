@@ -45,7 +45,6 @@ app.get("/",(req,res)=>{
 app.use(errorHandlerMiddleware)
 
 app.listen(port,()=>{
-    console.log("testing");
-    console.log("testing from own laptop");
+
     console.log(`Server is running on ${port} port`);
 })
