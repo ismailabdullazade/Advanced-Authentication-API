@@ -51,7 +51,22 @@ const checkToken = async (req,res,next) => {
     // next()
 }
 
+const createTemporaryToken = async (userId,email) => {
+    const payload = {
+        sub:userId,
+        email
+    }
+
+    const token = await jwt.sign(payload,process.env.JWT_TEMPORARY_SECRET_KEY,{
+        algorithm:"HS512",
+        expiresIn:process.env.JWT_TEMPORARY_EXPIRES_IN
+    })
+
+    return "Bearer " + token;
+}
+
 module.exports={
     createToken,
-    checkToken
+    checkToken,
+    createTemporaryToken
 }
