@@ -9,5 +9,6 @@ router.post("/forget-password",forgetPassword)
 router.post("/reset-code-check",resetCodeCheck)
 
 router.get("/me",checkToken,me)
+router.post("/forget-password",forgetPassword)
 
 module.exports = router
