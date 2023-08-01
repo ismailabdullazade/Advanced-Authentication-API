@@ -3,15 +3,15 @@ const router = require("./src/routers")
 const errorHandlerMiddleware = require("./src/middlewares/errorHandler")
 const app = express()
 require("dotenv").config()
-require("./src/db/dbConnection")
-const port = process.env.PORT || 5001
-const cors = require("cors")
-const corsOptions = require("./src/helpers/corsOptions")
-const mongoSanitize = require("express-mongo-sanitize")
-const path = require("path")
-const apiLimiter = require("./src/middlewares/validations/rateLimit")
-const moment = require("moment-timezone")
-moment.tz.setDefault("Europe/Istanbul")
+require("./src/db/dbConnection");
+const port = process.env.PORT || 5001;
+const cors = require("cors");
+const corsOptions = require("./src/helpers/corsOptions");
+const mongoSanitize = require("express-mongo-sanitize");
+const path = require("path");
+const apiLimiter = require("./src/middlewares/validations/rateLimit");
+const moment = require("moment-timezone");
+moment.tz.setDefault("Europe/Istanbul");
 
 //Middlewares
 
